@@ -22,5 +22,7 @@ from django.urls import path
 
 urlpatterns = [
     path('oneandonlygod/', oneandonlygod.site.urls),
+    
     path('', include('landing.urls')),
+    path('accounts/', include('allauth.urls')),
 ]
