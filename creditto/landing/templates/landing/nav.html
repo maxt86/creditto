@@ -1,6 +1,6 @@
 <nav class="navbar navbar-dark navbar-expand-lg bg-dark">
   <div class="container-fluid">
-    <a class="navbar-brand" href="{% if user.is_authenticated %}{% url 'posts' %}{% else %}{% url 'index' %}{% endif %}">
+    <a class="navbar-brand text-warning" href="{% if user.is_authenticated %}{% url 'posts' %}{% else %}{% url 'index' %}{% endif %}">
       <i class="fas fa-hand-spock"></i>
       Creditto
     </a>
