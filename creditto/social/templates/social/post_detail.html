@@ -11,13 +11,23 @@
 
 <div class="row justify-content-center mb-4">
   <div class="col-md-5 col-sm-12 border-bottom">
-    <h6><strong>{{ post.author }}</strong> {{ post.created }}</h6>
+    <h6 class="d-flex justify-content-between">
+      <span>
+        <strong>{{ post.author }}</strong> {{ post.created }}
+      </span>
+      {% if request.user == post.author %}
+      <span class="d-flex gap-1">
+        <a href="{% url 'post-edit' post.pk %}" class="text-warning"><i class="far fa-edit"></i></a>
+        <a href="{% url 'post-delete' post.pk %}" class="text-danger"><i class="fas fa-trash"></i></a>
+      </span>
+      {% endif %}
+    </h6>
     <p>{{ post.content }}</p>
   </div>
 </div>
 
 <div class="row justify-content-center">
-  <div class="col-md-5 col-sm-12">
+  <div class="col-md-5 col-sm-12 ps-5">
     <form method="post">
       {% csrf_token %}
       <div class="d-flex align-items-center gap-2">
@@ -27,4 +37,23 @@
     </form>
   </div>
 </div>
+
+{% for comment in comments %}
+<div class="row justify-content-center mb-3">
+  <div class="col-md-5 col-sm-12 ps-5 border-bottom">
+    <h6 class="d-flex justify-content-between">
+      <span>
+        <strong>{{ comment.author }}</strong> {{ comment.created }}
+      </span>
+      {% if request.user == comment.author %}
+      <span class="d-flex gap-1">
+        <a href="{% url 'comment-edit' post.pk comment.pk %}" class="text-warning"><i class="far fa-edit"></i></a>
+        <a href="{% url 'comment-delete' post.pk comment.pk %}" class="text-danger"><i class="fas fa-trash"></i></a>
+      </span>
+      {% endif %}
+    </h6>
+    <p>{{ comment.comment }}</p>
+  </div>
+</div>
+{% endfor %}
 {% endblock content %}

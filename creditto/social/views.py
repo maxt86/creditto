@@ -1,7 +1,11 @@
 from django.shortcuts import render
+from django.urls import reverse_lazy
+
 from django.views import View
+from django.views.generic.edit import UpdateView, DeleteView
 
 from .models import Post
+from .models import Comment
 
 from .forms import PostForm
 from .forms import CommentForm
@@ -43,11 +47,67 @@ class PostDetailView(View):
         
         form = CommentForm()
         
+        comments = Comment.objects.filter(post=post).order_by('-created')
+        
         context = {
             'post': post,
             'form': form,
+            'comments': comments,
         }
         return render(request, 'social/post_detail.html', context)
     
-    def post(self, request, *args, **kwargs):
-        pass
+    def post(self, request, pk, *args, **kwargs):
+        post = Post.objects.get(pk=pk)
+        
+        print(request.user)
+        
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            new_comment = form.save(commit=False)
+            new_comment.author = request.user
+            new_comment.post = post
+            new_comment.save()
+        
+        comments = Comment.objects.filter(post=post).order_by('-created')
+        
+        context = {
+            'post': post,
+            'form': form,
+            'comments': comments,
+        }
+        return render(request, 'social/post_detail.html', context)
+
+
+class PostEditView(UpdateView):
+    
+    model = Post
+    fields = ['content']
+    template_name = 'social/post_edit.html'
+    
+    def get_success_url(self):
+        return reverse_lazy('post-detail', kwargs={'pk': self.kwargs['pk']})
+
+
+class PostDeleteView(DeleteView):
+    model = Post
+    template_name = 'social/post_delete.html'
+    success_url = reverse_lazy('posts')
+
+
+class CommentEditView(UpdateView):
+    
+    model = Comment
+    fields = ['comment']
+    template_name = 'social/comment_edit.html'
+    
+    def get_success_url(self):
+        return reverse_lazy('post-detail', kwargs={'pk': self.kwargs['post_pk']})
+
+
+class CommentDeleteView(DeleteView):
+    
+    model = Comment
+    template_name = 'social/comment_delete.html'
+    
+    def get_success_url(self):
+        return reverse_lazy('post-detail', kwargs={'pk': self.kwargs['post_pk']})
