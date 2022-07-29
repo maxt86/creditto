@@ -18,9 +18,10 @@
 
 {% for post in posts %}
 <div class="row justify-content-center mt-3">
-  <div class="col-md-5 col-sm-12 border-bottom">
+  <div class="col-md-5 col-sm-12 position-relative border-bottom">
     <h6><strong>{{ post.author }}</strong> {{ post.created }}</h6>
     <p>{{ post.content }}</p>
+    <a href="{% url 'post-detail' post.pk %}" class="stretched-link"></a>
   </div>
 </div>
 {% endfor %}

@@ -1,0 +1,30 @@
+{% extends 'landing/base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="row mb-4">
+  <div class="col-md-5 col-sm-6">
+    <a class="btn btn-dark btn-sm shadow-none" href="{% url 'posts' %}">&laquo; Back</a>
+  </div>
+</div>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-md-5 col-sm-12 border-bottom">
+    <h6><strong>{{ post.author }}</strong> {{ post.created }}</h6>
+    <p>{{ post.content }}</p>
+  </div>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col-md-5 col-sm-12">
+    <form method="post">
+      {% csrf_token %}
+      <div class="d-flex align-items-center gap-2">
+        {{ form|crispy }}
+        <button class="mb-3 btn btn-warning btn-sm" type="submit">Comment</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock content %}
