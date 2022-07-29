@@ -3,8 +3,8 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<div class="row justify-content-center">
-  <div class="col-md-5 col-sm-12 pb-3 border-bottom">
+<div class="row justify-content-center mb-3">
+  <div class="col-md-5 col-sm-12 pb-3">
     <h5>What's going on?</h5>
     <form method="post">
       {% csrf_token %}
@@ -17,7 +17,7 @@
 </div>
 
 {% for post in posts %}
-<div class="row justify-content-center mt-3">
+<div class="row justify-content-center mb-3">
   <div class="col-md-5 col-sm-12 position-relative border-bottom">
     <h6><strong>{{ post.author }}</strong> {{ post.created }}</h6>
     <p>{{ post.content }}</p>
