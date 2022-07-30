@@ -3,17 +3,23 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
+{% if request.user.is_authenticated %}
 <div class="row mb-4">
   <div class="col-md-5 col-sm-6">
-    <a class="btn btn-dark btn-sm shadow-none" href="{% url 'posts' %}">&laquo; Feed</a>
+    <a class="btn btn-dark btn-sm shadow-none" href="{% url 'posts' %}">Feed</a>
   </div>
 </div>
+{% endif %}
 
 <div class="row justify-content-center mb-4">
   <div class="col-md-5 col-sm-12 border-bottom">
     <h6 class="d-flex justify-content-between">
       <span>
-        <strong>{{ post.author }}</strong> {{ post.created }}
+        <strong class="position-relative">
+          {{ post.author }}
+          <a href="{% url 'profile' post.author.pk %}" class="stretched-link"></a>
+        </strong>
+        {{ post.created }}
       </span>
       {% if request.user == post.author %}
       <span class="d-flex gap-1">
@@ -26,6 +32,7 @@
   </div>
 </div>
 
+{% if request.user.is_authenticated %}
 <div class="row justify-content-center">
   <div class="col-md-5 col-sm-12 ps-5">
     <form method="post">
@@ -37,13 +44,18 @@
     </form>
   </div>
 </div>
+{% endif %}
 
 {% for comment in comments %}
 <div class="row justify-content-center mb-3">
   <div class="col-md-5 col-sm-12 ps-5 border-bottom">
     <h6 class="d-flex justify-content-between">
       <span>
-        <strong>{{ comment.author }}</strong> {{ comment.created }}
+        <strong class="position-relative">
+          {{ comment.author }}
+          <a href="{% url 'profile' comment.author.pk %}" class="stretched-link"></a>
+        </strong>
+        {{ comment.created }}
       </span>
       {% if request.user == comment.author %}
       <span class="d-flex gap-1">

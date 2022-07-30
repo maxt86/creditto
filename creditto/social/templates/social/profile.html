@@ -1,0 +1,43 @@
+{% extends 'landing/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center mb-4">
+  <div class="d-grid justify-content-center card shadow-sm col-md-5 col-sm-12 mt-2 pb-3">
+    <div class="text-center my-3">
+      <img class="rounded-circle" src="{{ profile.avatar.url }}" width="128" height="128">
+    </div>
+    
+    <h5 class="text-center">
+      {% if profile.name %}
+      {{ profile.name }}
+      {% endif %}
+      <strong>@{{ profile.user.username }}</strong>
+      {% if request.user == user %}
+      <a href="{% url 'profile-edit' profile.pk %}" class="text-warning"><i class="far fa-edit"></i></a>
+      {% endif %}
+    </h5>
+    
+    {% if profile.birthdate %}
+    <span>{{ profile.birthdate }}</span>
+    {% endif %}
+    
+    {% if profile.location %}
+    <span>{{ profile.location }}</span>
+    {% endif %}
+    
+    {% if profile.bio %}
+    <span class="mt-2">{{ profile.bio }}</span>
+    {% endif %}
+  </div>
+</div>
+
+{% for post in posts %}
+<div class="row justify-content-center mb-3">
+  <div class="col-md-5 col-sm-12 position-relative border-bottom">
+    <h6><strong>{{ post.author }}</strong> {{ post.created }}</h6>
+    <p>{{ post.content }}</p>
+    <a href="{% url 'post-detail' post.pk %}" class="stretched-link"></a>
+  </div>
+</div>
+{% endfor %}
+{% endblock content %}

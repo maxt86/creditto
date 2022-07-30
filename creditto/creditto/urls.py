@@ -19,6 +19,9 @@ from django.contrib import admin as oneandonlygod
 from django.urls import include
 from django.urls import path
 
+from django.conf import settings
+from django.conf.urls.static import static
+
 
 urlpatterns = [
     path('oneandonlygod/', oneandonlygod.site.urls),
@@ -26,4 +29,4 @@ urlpatterns = [
     path('', include('landing.urls')),
     path('accounts/', include('allauth.urls')),
     path('social/', include('social.urls')),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

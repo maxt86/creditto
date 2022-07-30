@@ -1,6 +1,6 @@
 <nav class="sticky-top navbar navbar-dark navbar-expand-lg bg-dark">
   <div class="container-fluid">
-    <a class="navbar-brand text-warning" href="{% if user.is_authenticated %}{% url 'posts' %}{% else %}{% url 'index' %}{% endif %}">
+    <a class="navbar-brand text-warning" href="{% if request.user.is_authenticated %}{% url 'posts' %}{% else %}{% url 'index' %}{% endif %}">
       <i class="fas fa-hand-spock"></i>
       Creditto
     </a>
@@ -17,13 +17,13 @@
             <input type="text" class="form-control shadow-none" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
           </div>
         </form>
-        {% if user.is_authenticated %}
+        {% if request.user.is_authenticated %}
         <div class="nav-item dropdown">
           <a class="nav-link dropdown-toggle text-light" role="button" aria-expanded="false" data-bs-toggle="dropdown">
             <i class="fas fa-user"></i>
           </a>
           <ul class="mt-3 dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" href="#">Profile</a></li>
+            <li><a class="dropdown-item" href="{% url 'profile' request.user.profile.pk %}">Profile</a></li>
             <li><a class="dropdown-item" href="{% url 'account_logout' %}">Sign out</a></li>
           </ul>
         </div>

@@ -7,11 +7,48 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.views import View
 from django.views.generic.edit import UpdateView, DeleteView
 
+from .models import Profile
 from .models import Post
 from .models import Comment
 
 from .forms import PostForm
 from .forms import CommentForm
+
+
+class ProfileView(View):
+    
+    def get(self, request, pk, *args, **kwargs):
+        profile = Profile.objects.get(pk=pk)
+        user = profile.user
+        posts = Post.objects.filter(author=user).order_by('-created')
+        
+        context = {
+            'profile': profile,
+            'user': user,
+            'posts': posts,
+        }
+        return render(request, 'social/profile.html', context)
+
+
+class ProfileEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    
+    model = Profile
+    
+    fields = [
+        'avatar',
+        'name',
+        'birthdate',
+        'bio',
+    ]
+    
+    template_name = 'social/profile_edit.html'
+    
+    def get_success_url(self):
+        return reverse_lazy('profile', kwargs={'pk': self.kwargs['pk']})
+    
+    def test_func(self):
+        profile = self.get_object()
+        return (self.request.user == profile.user)
 
 
 class PostsView(LoginRequiredMixin, View):
@@ -43,7 +80,7 @@ class PostsView(LoginRequiredMixin, View):
         return render(request, 'social/posts.html', context)
 
 
-class PostDetailView(LoginRequiredMixin, View):
+class PostDetailView(View):
     
     def get(self, request, pk, *args, **kwargs):
         post = Post.objects.get(pk=pk)
