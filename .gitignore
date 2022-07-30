@@ -85,3 +85,6 @@ local_settings.py
 
 .env
 db.sqlite3
+
+creditto/media/uploads/avatars/*
+!creditto/media/uploads/avatars/default.png
