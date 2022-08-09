@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.shortcuts import redirect
+
 from django.urls import reverse_lazy
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -19,11 +21,23 @@ class ProfileView(View):
     
     def get(self, request, pk, *args, **kwargs):
         profile = Profile.objects.get(pk=pk)
+        
+        followers = profile.followers.all()
+        num_followers = len(followers)
+        
+        following = False
+        for follower in followers:
+            if follower == request.user:
+                following = True
+                break
+        
         user = profile.user
         posts = Post.objects.filter(author=user).order_by('-created')
         
         context = {
             'profile': profile,
+            'num_followers': num_followers,
+            'following': following,
             'user': user,
             'posts': posts,
         }
@@ -49,6 +63,24 @@ class ProfileEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def test_func(self):
         profile = self.get_object()
         return (self.request.user == profile.user)
+
+
+class FollowView(LoginRequiredMixin, View):
+    
+    def post(self, request, pk, *args, **kwargs):
+        profile = Profile.objects.get(pk=pk)
+        profile.followers.add(request.user)
+        
+        return redirect('profile', pk=profile.pk)
+
+
+class UnfollowView(LoginRequiredMixin, View):
+    
+    def post(self, request, pk, *args, **kwargs):
+        profile = Profile.objects.get(pk=pk)
+        profile.followers.remove(request.user)
+        
+        return redirect('profile', pk=profile.pk)
 
 
 class PostsView(LoginRequiredMixin, View):

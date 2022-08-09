@@ -36,6 +36,8 @@ class Profile(models.Model):
         default='uploads/avatars/default.png',
         blank=True,
     )
+    
+    followers = models.ManyToManyField(User, related_name='followers', blank=True)
 
 
 class Post(models.Model):

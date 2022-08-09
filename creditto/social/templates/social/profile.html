@@ -28,6 +28,26 @@
     {% if profile.bio %}
     <span class="mt-2">{{ profile.bio }}</span>
     {% endif %}
+    
+    <div class="d-flex justify-content-between align-items-baseline mt-3">
+      <span>
+        <i>Followers:</i>
+        {{ num_followers }}
+      </span>
+      {% if user != request.user %}
+      {% if following %}
+      <form action="{% url 'remove-follower' profile.pk %}" method="post">
+        {% csrf_token %}
+        <button class="btn btn-sm btn-outline-danger" type="submit">Unfollow</button>
+      </form>
+      {% else %}
+      <form action="{% url 'add-follower' profile.pk %}" method="post">
+        {% csrf_token %}
+        <button class="btn btn-sm btn-outline-success" type="submit">Follow</button>
+      </form>
+      {% endif %}
+      {% endif %}
+    </div>
   </div>
 </div>
 

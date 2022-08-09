@@ -2,6 +2,8 @@ from django.urls import path
 
 from .views import ProfileView
 from .views import ProfileEditView
+from .views import FollowView
+from .views import UnfollowView
 from .views import PostsView
 from .views import PostDetailView
 from .views import PostEditView
@@ -15,6 +17,8 @@ urlpatterns = [
     
     path('profile/<int:pk>/', ProfileView.as_view(), name='profile'),
     path('profile/<int:pk>/edit/', ProfileEditView.as_view(), name='profile-edit'),
+    path('profile/<int:pk>/follow', FollowView.as_view(), name='add-follower'),
+    path('profile/<int:pk>/unfollow', UnfollowView.as_view(), name='remove-follower'),
     
     path('post/<int:pk>/', PostDetailView.as_view(), name='post-detail'),
     path('post/<int:pk>/edit/', PostEditView.as_view(), name='post-edit'),
