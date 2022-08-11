@@ -19,7 +19,7 @@
           {{ post.author }}
           <a href="{% url 'profile' post.author.pk %}" class="stretched-link"></a>
         </strong>
-        {{ post.created }}
+        <i>{{ post.created }}</i>
       </span>
       {% if request.user == post.author %}
       <span class="d-flex gap-1">
@@ -28,7 +28,25 @@
       </span>
       {% endif %}
     </h6>
-    <p>{{ post.content }}</p>
+    {{ post.content }}
+    <div class="d-flex gap-1 flex-row justify-content-end my-2">
+      <form action="{% url 'like' post.pk %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.path }}">
+        <button type="submit" style="border: none; box-shadow: none; background-color: transparent">
+          <i class="text-success fas fa-thumbs-up"></i>
+          <i>{{ post.likes.count }}</i>
+        </button>
+      </form>
+      <form action="{% url 'dislike' post.pk %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.path }}">
+        <button type="submit" style="border: none; box-shadow: none; background: transparent">
+          <i class="text-danger fas fa-thumbs-down"></i>
+          <i>{{ post.dislikes.count }}</i>
+        </button>
+      </form>
+    </div>
   </div>
 </div>
 
@@ -55,7 +73,7 @@
           {{ comment.author }}
           <a href="{% url 'profile' comment.author.pk %}" class="stretched-link"></a>
         </strong>
-        {{ comment.created }}
+        <i>{{ comment.created }}</i>
       </span>
       {% if request.user == comment.author %}
       <span class="d-flex gap-1">

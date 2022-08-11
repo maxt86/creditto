@@ -175,6 +175,64 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return (self.request.user == post.author)
 
 
+class LikeView(LoginRequiredMixin, View):
+    
+    def post(self, request, pk, *args, **kwargs):
+        post = Post.objects.get(pk=pk)
+        
+        disliked = False
+        for dislike in post.dislikes.all():
+            if dislike == request.user:
+                disliked = True
+                break
+        
+        if disliked:
+            post.dislikes.remove(request.user)
+        
+        liked = False
+        for like in post.likes.all():
+            if like == request.user:
+                liked = True
+                break
+        
+        if not liked:
+            post.likes.add(request.user)
+        else:
+            post.likes.remove(request.user)
+        
+        next = request.POST.get('next', '/')
+        return redirect(next)
+
+
+class DislikeView(LoginRequiredMixin, View):
+    
+    def post(self, request, pk, *args, **kwargs):
+        post = Post.objects.get(pk=pk)
+        
+        liked = False
+        for like in post.likes.all():
+            if like == request.user:
+                liked = True
+                break
+        
+        if liked:
+            post.likes.remove(request.user)
+        
+        disliked = False
+        for dislike in post.dislikes.all():
+            if dislike == request.user:
+                disliked = True
+                break
+        
+        if not disliked:
+            post.dislikes.add(request.user)
+        else:
+            post.dislikes.remove(request.user)
+        
+        next = request.POST.get('next', '/')
+        return redirect(next)
+
+
 class CommentEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     
     model = Comment

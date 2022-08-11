@@ -8,6 +8,8 @@ from .views import PostsView
 from .views import PostDetailView
 from .views import PostEditView
 from .views import PostDeleteView
+from .views import LikeView
+from .views import DislikeView
 from .views import CommentEditView
 from .views import CommentDeleteView
 
@@ -23,6 +25,8 @@ urlpatterns = [
     path('post/<int:pk>/', PostDetailView.as_view(), name='post-detail'),
     path('post/<int:pk>/edit/', PostEditView.as_view(), name='post-edit'),
     path('post/<int:pk>/delete/', PostDeleteView.as_view(), name='post-delete'),
+    path('post/<int:pk>/like', LikeView.as_view(), name='like'),
+    path('post/<int:pk>/dislike', DislikeView.as_view(), name='dislike'),
     
     path('post/<int:post_pk>/comment/<int:pk>/edit/', CommentEditView.as_view(), name='comment-edit'),
     path('post/<int:post_pk>/comment/<int:pk>/delete/', CommentDeleteView.as_view(), name='comment-delete'),
