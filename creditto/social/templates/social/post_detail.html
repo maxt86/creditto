@@ -33,7 +33,7 @@
       <form action="{% url 'like' post.pk %}" method="post">
         {% csrf_token %}
         <input type="hidden" name="next" value="{{ request.path }}">
-        <button type="submit" style="border: none; box-shadow: none; background-color: transparent">
+        <button type="submit" style="border: none; box-shadow: none; background: transparent">
           <i class="text-success fas fa-thumbs-up"></i>
           <i>{{ post.likes.count }}</i>
         </button>
