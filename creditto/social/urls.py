@@ -1,5 +1,6 @@
 from django.urls import path
 
+from .views import SearchView
 from .views import ProfileView
 from .views import ProfileEditView
 from .views import FollowView
@@ -16,6 +17,8 @@ from .views import CommentDeleteView
 
 urlpatterns = [
     path('', PostsView.as_view(), name='posts'),
+    
+    path('search/', SearchView.as_view(), name='search'),
     
     path('profile/<int:pk>/', ProfileView.as_view(), name='profile'),
     path('profile/<int:pk>/edit/', ProfileEditView.as_view(), name='profile-edit'),

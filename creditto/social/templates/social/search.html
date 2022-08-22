@@ -1,0 +1,28 @@
+{% extends 'landing/base.html' %}
+
+{% block content %}
+{% if profiles %}
+{% for profile in profiles %}
+<div class="row justify-content-center mb-3">
+  <div class="col-md-5 col-sm-12 py-3 border-bottom position-relative">
+    <h6 class="mb-0">
+      <strong>@{{ profile.user }}</strong>
+      {% if profile.name %}
+      <i>{{ profile.name }}</i>
+      {% endif %}
+    </h6>
+    {% if profile.bio %}
+    <div class="mt-2">{{ profile.bio }}</div>
+    {% endif %}
+    <a href="{% url 'profile' profile.pk %}" class="stretched-link"></a>
+  </div>
+</div>
+{% endfor %}
+{% else %}
+<div class="row justify-content-center">
+  <div class="col-md-6 col-sm-12 text-center">
+    <h1 class="display-5">Wow, such empty...</h1>
+  </div>
+</div>
+{% endif %}
+{% endblock content %}

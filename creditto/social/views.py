@@ -1,3 +1,5 @@
+from django.db.models import Q
+
 from django.shortcuts import render
 from django.shortcuts import redirect
 
@@ -15,6 +17,26 @@ from .models import Comment
 
 from .forms import PostForm
 from .forms import CommentForm
+
+
+class SearchView(View):
+    
+    MIN_QUERY_LEN = 4
+    
+    def get(self, request, *args, **kwargs):
+        query = self.request.GET.get('q')
+        
+        if query is None or len(query) < self.MIN_QUERY_LEN:
+            profiles = None
+        else:
+            profiles = Profile.objects.filter(
+                Q(user__username__icontains=query)
+            )
+        
+        context = {
+            'profiles': profiles,
+        }
+        return render(request, 'social/search.html', context)
 
 
 class ProfileView(View):
