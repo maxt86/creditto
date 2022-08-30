@@ -55,7 +55,10 @@
 <div class="row justify-content-center mb-3">
   <div class="col-md-5 col-sm-12 border-bottom">
     <div class="position-relative">
-      <h6><strong>{{ post.author }}</strong> {{ post.created }}</h6>
+      <h6>
+        <strong>{{ post.author }}</strong>
+        <i>{{ post.created }}</i>
+      </h6>
       {{ post.content }}
       <a href="{% url 'post-detail' post.pk %}" class="stretched-link"></a>
     </div>
