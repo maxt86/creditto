@@ -63,7 +63,7 @@
       <form action="{% url 'like' post.pk %}" method="post">
         {% csrf_token %}
         <input type="hidden" name="next" value="{{ request.path }}">
-        <button type="submit" style="border: none; box-shadow: none; background: transparent">
+        <button type="submit" class="btn-cleardefaults">
           <i class="text-success fas fa-thumbs-up"></i>
           <i>{{ post.likes.count }}</i>
         </button>
@@ -71,7 +71,7 @@
       <form action="{% url 'dislike' post.pk %}" method="post">
         {% csrf_token %}
         <input type="hidden" name="next" value="{{ request.path }}">
-        <button type="submit" style="border: none; box-shadow: none; background: transparent">
+        <button type="submit" class="btn-cleardefaults">
           <i class="text-danger fas fa-thumbs-down"></i>
           <i>{{ post.dislikes.count }}</i>
         </button>
