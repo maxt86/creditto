@@ -15,14 +15,15 @@
   <div class="col-md-5 col-sm-12 border-bottom">
     <h6 class="d-flex justify-content-between">
       <span>
+        <a href="{% url 'profile' post.author.pk %}"><img class="rounded-circle me-1" src="{{ post.author.profile.avatar.url }}" width="36" height="36"></a>
         <strong class="position-relative">
           {{ post.author }}
           <a href="{% url 'profile' post.author.pk %}" class="stretched-link"></a>
         </strong>
-        <i>{{ post.created }}</i>
+        <i class="text-secondary">{{ post.created }}</i>
       </span>
       {% if request.user == post.author %}
-      <span class="d-flex gap-1">
+      <span class="d-flex gap-1 align-items-start">
         <a href="{% url 'post-edit' post.pk %}" class="text-warning"><i class="far fa-edit"></i></a>
         <a href="{% url 'post-delete' post.pk %}" class="text-danger"><i class="fas fa-trash"></i></a>
       </span>
@@ -69,14 +70,15 @@
   <div class="col-md-5 col-sm-12 ps-5 border-bottom">
     <h6 class="d-flex justify-content-between">
       <span>
+        <a href="{% url 'profile' post.author.pk %}"><img class="rounded-circle me-1" src="{{ comment.author.profile.avatar.url }}" width="36" height="36"></a>
         <strong class="position-relative">
           {{ comment.author }}
           <a href="{% url 'profile' comment.author.pk %}" class="stretched-link"></a>
         </strong>
-        <i>{{ comment.created }}</i>
+        <i class="text-secondary">{{ comment.created }}</i>
       </span>
       {% if request.user == comment.author %}
-      <span class="d-flex gap-1">
+      <span class="d-flex gap-1 align-items-start">
         <a href="{% url 'comment-edit' post.pk comment.pk %}" class="text-warning"><i class="far fa-edit"></i></a>
         <a href="{% url 'comment-delete' post.pk comment.pk %}" class="text-danger"><i class="fas fa-trash"></i></a>
       </span>
