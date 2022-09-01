@@ -70,7 +70,7 @@
   <div class="col-md-5 col-sm-12 ps-5 border-bottom">
     <h6 class="d-flex justify-content-between">
       <span>
-        <a href="{% url 'profile' post.author.pk %}"><img class="rounded-circle me-1" src="{{ comment.author.profile.avatar.url }}" width="36" height="36"></a>
+        <a href="{% url 'profile' comment.author.pk %}"><img class="rounded-circle me-1" src="{{ comment.author.profile.avatar.url }}" width="36" height="36"></a>
         <strong class="position-relative">
           {{ comment.author }}
           <a href="{% url 'profile' comment.author.pk %}" class="stretched-link"></a>
