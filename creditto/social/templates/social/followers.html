@@ -1,0 +1,44 @@
+{% extends 'landing/base.html' %}
+
+{% block content %}
+<div class="row mb-4">
+  <div class="col-md-5 col-sm-6">
+    <a class="btn btn-dark btn-sm shadow-none" href="{% url 'profile' profile.pk %}">&laquo; Profile</a>
+  </div>
+</div>
+
+<div class="row justify-content-center mb-4">
+  <div class="d-grid justify-content-center card shadow-sm col-md-5 col-sm-12 mt-2 pb-3">
+    <div class="text-center my-3">
+      <img class="rounded-circle" src="{{ profile.avatar.url }}" width="128" height="128">
+    </div>
+    
+    <h5 class="text-center">
+      {% if profile.name %}
+      {{ profile.name }}
+      {% endif %}
+      <strong>@{{ profile.user.username }}</strong>
+    </h5>
+    
+    <i class="text-center">Followers</i>
+  </div>
+</div>
+
+{% for follower in followers %}
+<div class="row justify-content-center mb-3">
+  <div class="col-md-5 col-sm-12 py-3 border-bottom position-relative">
+    <h6 class="mb-0">
+      <img class="rounded-circle me-1" src="{{ follower.profile.avatar.url }}" width="36" height="36">
+      <strong>{{ follower.profile.user }}</strong>
+      {% if follower.profile.name %}
+      <i>{{ follower.profile.name }}</i>
+      {% endif %}
+    </h6>
+    {% if follower.profile.bio %}
+    <div class="mt-2">{{ follower.profile.bio }}</div>
+    {% endif %}
+    <a href="{% url 'profile' follower.pk %}" class="stretched-link"></a>
+  </div>
+</div>
+{% endfor %}
+{% endblock content %}

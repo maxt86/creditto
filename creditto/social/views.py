@@ -105,6 +105,19 @@ class UnfollowView(LoginRequiredMixin, View):
         return redirect('profile', pk=profile.pk)
 
 
+class FollowersView(View):
+    
+    def get(self, request, pk, *args, **kwargs):
+        profile = Profile.objects.get(pk=pk)
+        followers = profile.followers.all()
+        
+        context = {
+            'profile': profile,
+            'followers': followers,
+        }
+        return render(request, 'social/followers.html', context)
+
+
 class PostsView(LoginRequiredMixin, View):
     
     def get(self, request, *args, **kwargs):

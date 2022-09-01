@@ -32,7 +32,7 @@
     <div class="d-flex justify-content-between align-items-baseline mt-3">
       <span>
         <i>Followers:</i>
-        {{ num_followers }}
+        <a class="text-dark bg-warning px-2 pb-1 rounded" href="{% url 'followers' profile.pk %}">{{ num_followers }}</a>
       </span>
       {% if user != request.user %}
       {% if following %}
