@@ -74,6 +74,7 @@ class ProfileEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         'avatar',
         'name',
         'birthdate',
+        'location',
         'bio',
     ]
     
