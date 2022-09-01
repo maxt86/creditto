@@ -296,3 +296,61 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         comment = self.get_object()
         return (self.request.user == comment.author)
+
+
+class CommentLikeView(LoginRequiredMixin, View):
+    
+    def post(self, request, pk, *args, **kwargs):
+        comment = Comment.objects.get(pk=pk)
+        
+        disliked = False
+        for dislike in comment.dislikes.all():
+            if dislike == request.user:
+                disliked = True
+                break
+        
+        if disliked:
+            comment.dislikes.remove(request.user)
+        
+        liked = False
+        for like in comment.likes.all():
+            if like == request.user:
+                liked = True
+                break
+        
+        if not liked:
+            comment.likes.add(request.user)
+        else:
+            comment.likes.remove(request.user)
+        
+        next = request.POST.get('next', '/')
+        return redirect(next)
+
+
+class CommentDislikeView(LoginRequiredMixin, View):
+    
+    def post(self, request, pk, *args, **kwargs):
+        comment = Comment.objects.get(pk=pk)
+        
+        liked = False
+        for like in comment.likes.all():
+            if like == request.user:
+                liked = True
+                break
+        
+        if liked:
+            comment.likes.remove(request.user)
+        
+        disliked = False
+        for dislike in comment.dislikes.all():
+            if dislike == request.user:
+                disliked = True
+                break
+        
+        if not disliked:
+            comment.dislikes.add(request.user)
+        else:
+            comment.dislikes.remove(request.user)
+        
+        next = request.POST.get('next', '/')
+        return redirect(next)

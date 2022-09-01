@@ -84,7 +84,25 @@
       </span>
       {% endif %}
     </h6>
-    <p>{{ comment.comment }}</p>
+    {{ comment.comment }}
+    <div class="d-flex gap-1 flex-row justify-content-end my-2">
+      <form action="{% url 'comment-like' post.pk comment.pk %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.path }}">
+        <button type="submit" class="btn-cleardefaults">
+          <i class="text-warning fas fa-thumbs-up"></i>
+          <i>{{ comment.likes.count }}</i>
+        </button>
+      </form>
+      <form action="{% url 'comment-dislike' post.pk comment.pk %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.path }}">
+        <button type="submit" class="btn-cleardefaults">
+          <i class="text-secondary far fa-thumbs-down"></i>
+          <i>{{ comment.dislikes.count }}</i>
+        </button>
+      </form>
+    </div>
   </div>
 </div>
 {% endfor %}
