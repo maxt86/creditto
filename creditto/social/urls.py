@@ -12,6 +12,7 @@ from .views import PostEditView
 from .views import PostDeleteView
 from .views import LikeView
 from .views import DislikeView
+from .views import CommentReplyView
 from .views import CommentEditView
 from .views import CommentDeleteView
 from .views import CommentLikeView
@@ -35,6 +36,7 @@ urlpatterns = [
     path('post/<int:pk>/like/', LikeView.as_view(), name='like'),
     path('post/<int:pk>/dislike/', DislikeView.as_view(), name='dislike'),
     
+    path('post/<int:post_pk>/comment/<int:pk>/reply/', CommentReplyView.as_view(), name='comment-reply'),
     path('post/<int:post_pk>/comment/<int:pk>/edit/', CommentEditView.as_view(), name='comment-edit'),
     path('post/<int:post_pk>/comment/<int:pk>/delete/', CommentDeleteView.as_view(), name='comment-delete'),
     path('post/<int:post_pk>/comment/<int:pk>/like/', CommentLikeView.as_view(), name='comment-like'),
