@@ -34,17 +34,17 @@
       <form action="{% url 'like' post.pk %}" method="post">
         {% csrf_token %}
         <input type="hidden" name="next" value="{{ request.path }}">
-        <button type="submit" class="btn-cleardefaults">
+        <button type="submit" class="btn-cleardefaults" {% if not request.user.is_authenticated %}disabled{% endif %}>
           <i class="text-success fas fa-thumbs-up"></i>
-          <i>{{ post.likes.count }}</i>
+          <i class="text-dark">{{ post.likes.count }}</i>
         </button>
       </form>
       <form action="{% url 'dislike' post.pk %}" method="post">
         {% csrf_token %}
         <input type="hidden" name="next" value="{{ request.path }}">
-        <button type="submit" class="btn-cleardefaults">
+        <button type="submit" class="btn-cleardefaults" {% if not request.user.is_authenticated %}disabled{% endif %}>
           <i class="text-danger fas fa-thumbs-down"></i>
-          <i>{{ post.dislikes.count }}</i>
+          <i class="text-dark">{{ post.dislikes.count }}</i>
         </button>
       </form>
     </div>
@@ -96,17 +96,17 @@
         <form action="{% url 'comment-like' post.pk comment.pk %}" method="post">
           {% csrf_token %}
           <input type="hidden" name="next" value="{{ request.path }}">
-          <button type="submit" class="btn-cleardefaults">
+          <button type="submit" class="btn-cleardefaults" {% if not request.user.is_authenticated %}disabled{% endif %}>
             <i class="text-warning fas fa-thumbs-up"></i>
-            <i>{{ comment.likes.count }}</i>
+            <i class="text-dark">{{ comment.likes.count }}</i>
           </button>
         </form>
         <form action="{% url 'comment-dislike' post.pk comment.pk %}" method="post">
           {% csrf_token %}
           <input type="hidden" name="next" value="{{ request.path }}">
-          <button type="submit" class="btn-cleardefaults">
+          <button type="submit" class="btn-cleardefaults" {% if not request.user.is_authenticated %}disabled{% endif %}>
             <i class="text-secondary far fa-thumbs-down"></i>
-            <i>{{ comment.dislikes.count }}</i>
+            <i class="text-dark">{{ comment.dislikes.count }}</i>
           </button>
         </form>
       </div>
@@ -152,17 +152,17 @@
           <form action="{% url 'comment-like' post.pk child_comment.pk %}" method="post">
             {% csrf_token %}
             <input type="hidden" name="next" value="{{ request.path }}">
-            <button type="submit" class="btn-cleardefaults">
+            <button type="submit" class="btn-cleardefaults" {% if not request.user.is_authenticated %}disabled{% endif %}>
               <i class="text-warning fas fa-thumbs-up"></i>
-              <i>{{ child_comment.likes.count }}</i>
+              <i class="text-dark">{{ child_comment.likes.count }}</i>
             </button>
           </form>
           <form action="{% url 'comment-dislike' post.pk child_comment.pk %}" method="post">
             {% csrf_token %}
             <input type="hidden" name="next" value="{{ request.path }}">
-            <button type="submit" class="btn-cleardefaults">
+            <button type="submit" class="btn-cleardefaults" {% if not request.user.is_authenticated %}disabled{% endif %}>
               <i class="text-secondary far fa-thumbs-down"></i>
-              <i>{{ child_comment.dislikes.count }}</i>
+              <i class="text-dark">{{ child_comment.dislikes.count }}</i>
             </button>
           </form>
         </div>

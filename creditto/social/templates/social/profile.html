@@ -67,17 +67,17 @@
       <form action="{% url 'like' post.pk %}" method="post">
         {% csrf_token %}
         <input type="hidden" name="next" value="{{ request.path }}">
-        <button type="submit" class="btn-cleardefaults">
+        <button type="submit" class="btn-cleardefaults" {% if not request.user.is_authenticated %}disabled{% endif %}>
           <i class="text-success fas fa-thumbs-up"></i>
-          <i>{{ post.likes.count }}</i>
+          <i class="text-dark">{{ post.likes.count }}</i>
         </button>
       </form>
       <form action="{% url 'dislike' post.pk %}" method="post">
         {% csrf_token %}
         <input type="hidden" name="next" value="{{ request.path }}">
-        <button type="submit" class="btn-cleardefaults">
+        <button type="submit" class="btn-cleardefaults" {% if not request.user.is_authenticated %}disabled{% endif %}>
           <i class="text-danger fas fa-thumbs-down"></i>
-          <i>{{ post.dislikes.count }}</i>
+          <i class="text-dark">{{ post.dislikes.count }}</i>
         </button>
       </form>
     </div>
