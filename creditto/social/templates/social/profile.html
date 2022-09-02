@@ -34,6 +34,7 @@
         <i>Followers:</i>
         <a class="text-dark bg-warning px-2 pb-1 rounded" href="{% url 'followers' profile.pk %}">{{ num_followers }}</a>
       </span>
+      {% if request.user.is_authenticated %}
       {% if user != request.user %}
       {% if following %}
       <form action="{% url 'remove-follower' profile.pk %}" method="post">
@@ -45,6 +46,7 @@
         {% csrf_token %}
         <button class="btn btn-sm btn-outline-success" type="submit">Follow</button>
       </form>
+      {% endif %}
       {% endif %}
       {% endif %}
     </div>
