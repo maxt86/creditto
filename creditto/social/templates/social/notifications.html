@@ -1,0 +1,40 @@
+{% if notifications.count %}
+<div id="notification-container" class="nav-item dropdown">
+  <button class="btn btn-sm btn-cleardefaults px-0" data-bs-toggle="dropdown">
+    <span id="notification-counter" class="badge bg-primary">{{ notifications.count }}</span>
+  </button>
+  <ul id="notification-list" class="mt-3 dropdown-menu dropdown-menu-end dropdown-box" onclick="event.stopPropagation()">
+    {% for notification in notifications %}
+    {% if forloop.counter0 %}
+    <li><hr class="dropdown-divider"></li>
+    {% endif %}
+    <li id="notification-{{ forloop.counter0 }}" class="notification">
+      <div class="dropdown-item-text d-flex justify-content-between">
+        <span>
+          <a class="text-decoration-none" href="{% url 'profile' notification.sender.profile.pk %}">@{{ notification.sender }}</a>
+          {% if notification.post %}
+            {% if notification.notification_type == 1 %}
+              liked your <a class="text-decoration-none" href="{% url 'post-notification' notification.post.pk notification.pk %}">post</a>
+            {% elif notification.notification_type == 2 %}
+              commented on your <a class="text-decoration-none" href="{% url 'post-notification' notification.post.pk notification.pk %}">post</a>
+            {% endif %}
+          {% elif notification.comment %}
+            {% if notification.notification_type == 1 %}
+              liked your <a class="text-decoration-none" href="{% url 'post-notification' notification.comment.post.pk notification.pk %}">comment</a>
+            {% elif notification.notification_type == 2 %}
+              replied to your <a class="text-decoration-none" href="{% url 'post-notification' notification.comment.post.pk notification.pk %}">comment</a>
+            {% endif %}
+          {% else %}
+            started following you
+          {% endif %}
+        </span>
+        <button
+          class="btn btn-sm btn-cleardefaults p-0 dropdown-close"
+          onclick="deleteNotification(`{% url 'notification-delete' notification.pk %}`, `notification-{{ forloop.counter0 }}`)"
+        >&times;</button>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}

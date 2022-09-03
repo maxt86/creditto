@@ -1,3 +1,5 @@
+from enum import Enum
+
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
@@ -65,3 +67,15 @@ class Comment(models.Model):
     @property
     def is_parent(self):
         return self.parent is None
+
+
+NotificationType = Enum('NotificationType', 'LIKE COMMENT FOLLOW')
+
+class Notification(models.Model):
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notification_from', null=True)
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notification_to', null=True)
+    notification_type = models.IntegerField()
+    date = models.DateTimeField(default=timezone.now)
+    post = models.ForeignKey('Post', on_delete=models.CASCADE, related_name='+', blank=True, null=True)
+    comment = models.ForeignKey('Comment', on_delete=models.CASCADE, related_name='+', blank=True, null=True)
+    viewed = models.BooleanField(default=False)

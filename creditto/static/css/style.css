@@ -7,3 +7,15 @@
   box-shadow: none !important;
   background: transparent !important;
 }
+
+.dropdown-box {
+  min-width: 20rem;
+}
+
+.dropdown-close {
+  color: black;
+}
+
+.dropdown-close:hover {
+  color: red;
+}

@@ -1,5 +1,7 @@
 from django.db.models import Q
 
+from django.http import HttpResponse
+
 from django.shortcuts import render
 from django.shortcuts import redirect
 
@@ -14,6 +16,7 @@ from django.views.generic.edit import UpdateView, DeleteView
 from .models import Profile
 from .models import Post
 from .models import Comment
+from .models import NotificationType, Notification
 
 from .forms import PostForm
 from .forms import CommentForm
@@ -94,6 +97,12 @@ class FollowView(LoginRequiredMixin, View):
         profile = Profile.objects.get(pk=pk)
         profile.followers.add(request.user)
         
+        notification = Notification.objects.create(
+            sender=request.user,
+            receiver=profile.user,
+            notification_type=NotificationType.FOLLOW.value,
+        )
+        
         return redirect('profile', pk=profile.pk)
 
 
@@ -117,6 +126,16 @@ class FollowersView(View):
             'followers': followers,
         }
         return render(request, 'social/followers.html', context)
+
+
+class ProfileNotificationView(LoginRequiredMixin, View):
+    
+    def get(self, request, profile_pk, pk, *args, **kwargs):
+        notification = Notification.objects.get(pk=pk)
+        notification.viewed = True
+        notification.save()
+        
+        return redirect('profile', pk=profile_pk)
 
 
 class PostsView(LoginRequiredMixin, View):
@@ -180,6 +199,14 @@ class PostDetailView(View):
         
         comments = Comment.objects.filter(post=post).order_by('-created')
         
+        if request.user != post.author:
+            notification = Notification.objects.create(
+                sender=request.user,
+                receiver=post.author,
+                notification_type=NotificationType.COMMENT.value,
+                post=post,
+            )
+        
         context = {
             'post': post,
             'form': form,
@@ -213,6 +240,16 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return (self.request.user == post.author)
 
 
+class PostNotificationView(LoginRequiredMixin, View):
+    
+    def get(self, request, post_pk, pk, *args, **kwargs):
+        notification = Notification.objects.get(pk=pk)
+        notification.viewed = True
+        notification.save()
+        
+        return redirect('post-detail', pk=post_pk)
+
+
 class LikeView(LoginRequiredMixin, View):
     
     def post(self, request, pk, *args, **kwargs):
@@ -235,6 +272,14 @@ class LikeView(LoginRequiredMixin, View):
         
         if not liked:
             post.likes.add(request.user)
+            
+            if request.user != post.author:
+                notification = Notification.objects.create(
+                    sender=request.user,
+                    receiver=post.author,
+                    notification_type=NotificationType.LIKE.value,
+                    post=post,
+                )
         else:
             post.likes.remove(request.user)
         
@@ -285,6 +330,14 @@ class CommentReplyView(LoginRequiredMixin, View):
             new_comment.parent = parent_comment
             new_comment.post = post
             new_comment.save()
+        
+        if request.user != parent_comment.author:
+            notification = Notification.objects.create(
+                sender=request.user,
+                receiver=parent_comment.author,
+                notification_type=NotificationType.COMMENT.value,
+                comment=new_comment,
+            )
         
         return redirect('post-detail', pk=post_pk)
 
@@ -338,6 +391,14 @@ class CommentLikeView(LoginRequiredMixin, View):
         
         if not liked:
             comment.likes.add(request.user)
+            
+            if request.user != comment.author:
+                notification = Notification.objects.create(
+                    sender=request.user,
+                    receiver=comment.author,
+                    notification_type=NotificationType.LIKE.value,
+                    comment=comment,
+                )
         else:
             comment.likes.remove(request.user)
         
@@ -372,3 +433,13 @@ class CommentDislikeView(LoginRequiredMixin, View):
         
         next = request.POST.get('next', '/')
         return redirect(next)
+
+
+class NotificationDeleteView(LoginRequiredMixin, View):
+    
+    def delete(self, request, pk, *args, **kwargs):
+        notification = Notification.objects.get(pk=pk)
+        notification.viewed = True
+        notification.save()
+        
+        return HttpResponse('success', content_type='text/plain')
