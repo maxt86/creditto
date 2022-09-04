@@ -60,6 +60,9 @@
       <h6>
         <i class="text-secondary">{{ post.created }}</i>
       </h6>
+      {% if post.image %}
+      <img src="{{ post.image.url }}" class="mw-100 d-block border border-muted rounded mx-auto mt-3 mb-2 post-picture">
+      {% endif %}
       {{ post.content }}
       <a href="{% url 'post-detail' post.pk %}" class="stretched-link"></a>
     </div>

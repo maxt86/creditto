@@ -29,6 +29,9 @@
       </span>
       {% endif %}
     </h6>
+    {% if post.image %}
+    <img src="{{ post.image.url }}" class="mw-100 d-block border border-muted rounded mx-auto mt-3 mb-2 post-picture">
+    {% endif %}
     {{ post.content }}
     <div class="d-flex gap-1 flex-row justify-content-end my-2">
       <form action="{% url 'like' post.pk %}" method="post">

@@ -19,3 +19,7 @@
 .dropdown-close:hover {
   color: red;
 }
+
+.post-picture {
+  max-height: 20rem;
+}

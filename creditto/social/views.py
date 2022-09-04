@@ -158,7 +158,7 @@ class PostsView(LoginRequiredMixin, View):
             author__profile__followers__in=[request.user.id]
         ).order_by('-created')
         
-        form = PostForm(request.POST)
+        form = PostForm(request.POST, request.FILES)
         if form.is_valid():
             new_post = form.save(commit=False)
             new_post.author = request.user
@@ -220,7 +220,7 @@ class PostDetailView(View):
 class PostEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     
     model = Post
-    fields = ['content']
+    fields = ['content', 'image']
     template_name = 'social/post_edit.html'
     
     def get_success_url(self):
