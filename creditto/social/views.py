@@ -154,7 +154,9 @@ class PostsView(LoginRequiredMixin, View):
         return render(request, 'social/posts.html', context)
     
     def post(self, request, *args, **kwargs):
-        posts = Post.objects.all().order_by('-created')
+        posts = Post.objects.filter(
+            author__profile__followers__in=[request.user.id]
+        ).order_by('-created')
         
         form = PostForm(request.POST)
         if form.is_valid():
