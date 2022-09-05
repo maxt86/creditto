@@ -132,6 +132,10 @@ class ProfileNotificationView(LoginRequiredMixin, View):
     
     def get(self, request, profile_pk, pk, *args, **kwargs):
         notification = Notification.objects.get(pk=pk)
+        
+        if request.user != notification.receiver:
+            return HttpResponse('failed', content_type='text/plain')
+        
         notification.viewed = True
         notification.save()
         
@@ -246,6 +250,10 @@ class PostNotificationView(LoginRequiredMixin, View):
     
     def get(self, request, post_pk, pk, *args, **kwargs):
         notification = Notification.objects.get(pk=pk)
+        
+        if request.user != notification.receiver:
+            return HttpResponse('failed', content_type='text/plain')
+        
         notification.viewed = True
         notification.save()
         
@@ -441,6 +449,10 @@ class NotificationDeleteView(LoginRequiredMixin, View):
     
     def delete(self, request, pk, *args, **kwargs):
         notification = Notification.objects.get(pk=pk)
+        
+        if request.user != notification.receiver:
+            return HttpResponse('failed', content_type='text/plain')
+        
         notification.viewed = True
         notification.save()
         

@@ -24,6 +24,11 @@ function deleteNotification(url, elemId) {
     
     axios.delete(url, config)
         .then((response) => {
+            if (response.data != 'success') {
+                alert('Notification Not Deleted');
+                return;
+            }
+            
             const numNotifications = document.querySelectorAll('.notification').length;
             
             if (numNotifications <= 1) {
@@ -42,7 +47,7 @@ function deleteNotification(url, elemId) {
             elem.remove();
             document.getElementById('notification-counter').innerText -= 1;
         })
-        .catch ((error) => {
+        .catch((error) => {
             alert('Internal Error');
         });
 }
