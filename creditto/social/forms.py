@@ -2,6 +2,7 @@ from django import forms
 
 from .models import Post
 from .models import Comment
+from .models import Message
 
 
 class PostForm(forms.ModelForm):
@@ -34,3 +35,18 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['comment']
+
+
+class ThreadForm(forms.Form):
+    username = forms.CharField(label='', max_length=100)
+
+
+class MessageForm(forms.ModelForm):
+    
+    content = forms.CharField(label='', max_length=1000)
+    
+    image = forms.ImageField(label='', required=False)
+    
+    class Meta:
+        model = Message
+        fields = ['content', 'image']

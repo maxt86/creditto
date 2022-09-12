@@ -23,3 +23,20 @@
 .post-picture {
   max-height: 20rem;
 }
+
+.inbox-icon {
+  transition: .5s;
+}
+
+.inbox-icon:hover {
+  color: rgb(var(--bs-primary-rgb)) !important;
+}
+
+.message {
+  width: 60%;
+}
+
+.message-picture {
+  max-width: 60%;
+  max-height: 10rem;
+}

@@ -7,6 +7,8 @@ from django.shortcuts import redirect
 
 from django.urls import reverse_lazy
 
+from django.contrib.auth.models import User
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import UserPassesTestMixin
 
@@ -17,9 +19,13 @@ from .models import Profile
 from .models import Post
 from .models import Comment
 from .models import NotificationType, Notification
+from .models import Thread
+from .models import Message
 
 from .forms import PostForm
 from .forms import CommentForm
+from .forms import ThreadForm
+from .forms import MessageForm
 
 
 class SearchView(View):
@@ -457,3 +463,125 @@ class NotificationDeleteView(LoginRequiredMixin, View):
         notification.save()
         
         return HttpResponse('success', content_type='text/plain')
+
+
+class ConversationsView(LoginRequiredMixin, View):
+    
+    def get(self, request, *args, **kwargs):
+        threads = Thread.objects.filter(
+            Q(user=request.user)
+            | Q(receiver=request.user)
+        )
+        
+        context = {
+            'threads': threads,
+        }
+        return render(request, 'social/conversations.html', context)
+
+
+class ThreadCreateView(LoginRequiredMixin, View):
+    
+    def get(self, request, *args, **kwargs):
+        form = ThreadForm(initial={
+            'username': self.request.GET.get('u', ''),
+        })
+        
+        context = {
+            'form': form,
+        }
+        return render(request, 'social/thread_create.html', context)
+    
+    def post(self, request, *args, **kwargs):
+        form = ThreadForm(request.POST)
+        
+        username = request.POST.get('username')
+        
+        try:
+            receiver = User.objects.get(username=username)
+            
+            if request.user == receiver:
+                raise ValueError()
+            
+            if Thread.objects.filter(user=request.user, receiver=receiver).exists():
+                thread = Thread.objects.filter(user=request.user, receiver=receiver)[0]
+                return redirect('thread', pk=thread.pk)
+            elif Thread.objects.filter(user=receiver, receiver=request.user).exists():
+                thread = Thread.objects.filter(user=receiver, receiver=request.user)[0]
+                return redirect('thread', pk=thread.pk)
+            
+            if form.is_valid():
+                thread = Thread(
+                    user=request.user,
+                    receiver=receiver,
+                )
+                thread.save()
+                
+                return redirect('thread', pk=thread.pk)
+        except:
+            context = {
+                'form': form,
+                'errors': [
+                    'Invalid username'
+                ],
+            }
+            return render(request, 'social/thread_create.html', context)
+
+
+class ThreadView(LoginRequiredMixin, View):
+    
+    def get(self, request, pk, *args, **kwargs):
+        thread = Thread.objects.get(pk=pk)
+        messages = Message.objects.filter(thread__pk__contains=pk)
+        form = MessageForm()
+        
+        context = {
+            'thread': thread,
+            'messages': messages,
+            'form': form,
+        }
+        return render(request, 'social/thread.html', context)
+
+
+class ThreadNotificationView(LoginRequiredMixin, View):
+    
+    def get(self, request, thread_pk, pk, *args, **kwargs):
+        notification = Notification.objects.get(pk=pk)
+        
+        if request.user != notification.receiver:
+            return HttpResponse('failed', content_type='text/plain')
+        
+        thread = Thread.objects.get(pk=thread_pk)
+        
+        notification.viewed = True
+        notification.save()
+        
+        return redirect('thread', pk=thread_pk)
+
+
+class MessageCreateView(LoginRequiredMixin, View):
+    
+    def post(self, request, pk, *args, **kwargs):
+        form = MessageForm(request.POST, request.FILES)
+        
+        thread = Thread.objects.get(pk=pk)
+        
+        if request.user == thread.receiver:
+            receiver = thread.user
+        else:
+            receiver = thread.receiver
+        
+        if form.is_valid():
+            message = form.save(commit=False)
+            message.sender = request.user
+            message.receiver = receiver
+            message.thread = thread
+            message.save()
+            
+            notification = Notification.objects.create(
+                sender=request.user,
+                receiver=receiver,
+                notification_type=NotificationType.MESSAGE.value,
+                thread=thread,
+            )
+        
+        return redirect('thread', pk=pk)

@@ -24,6 +24,8 @@
             {% elif notification.notification_type == 2 %}
               replied to your <a class="text-decoration-none" href="{% url 'post-notification' notification.comment.post.pk notification.pk %}">comment</a>
             {% endif %}
+          {% elif notification.thread %}
+            sent you a <a class="text-decoration-none" href="{% url 'thread-notification' notification.thread.pk notification.pk %}">message</a>
           {% else %}
             started following you
           {% endif %}

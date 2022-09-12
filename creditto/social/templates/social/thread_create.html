@@ -1,0 +1,38 @@
+{% extends 'landing/base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="row mb-4">
+  <div class="col-md-5 col-sm-6">
+    <a class="btn btn-dark btn-sm shadow-none" href="{% url 'conversations' %}">Inbox</a>
+  </div>
+</div>
+
+<div class="row justify-content-center mb-2">
+  <div class="col-md-5 col-sm-12">
+    <h1 class="display-6">
+      <i class="far fa-envelope thread-icon"></i>
+      New Thread
+    </h1>
+  </div>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col-md-5 sol-sm-12">
+    {% if errors %}
+    {% for error in errors %}
+    <div class="alert alert-danger">{{ error }}</div>
+    {% endfor %}
+    {% endif %}
+    <p class="lead mb-2">User to talk to:</p>
+    <form method="post">
+      {% csrf_token %}
+      {{ form|crispy }}
+      <div class="d-grid gap-2">
+        <button class="btn btn-warning mt-3 mb-4" type="submit">Start Conversation</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock content %}

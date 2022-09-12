@@ -21,6 +21,9 @@
         </form>
         {% if request.user.is_authenticated %}
         {% show_notifications %}
+        <div class="nav-item">
+          <a class="btn btn-sm btn-cleardefaults px-0 text-light inbox-icon" href="{% url 'conversations' %}"><i class="far fa-paper-plane"></i></a>
+        </div>
         <div class="nav-item dropdown">
           <a class="nav-link dropdown-toggle text-light" role="button" aria-expanded="false" data-bs-toggle="dropdown">
             <i class="fas fa-user"></i>

@@ -70,7 +70,22 @@ class Comment(models.Model):
         return self.parent is None
 
 
-NotificationType = Enum('NotificationType', 'LIKE COMMENT FOLLOW')
+class Thread(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='+')
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='+')
+
+
+class Message(models.Model):
+    thread = models.ForeignKey('Thread', on_delete=models.CASCADE, related_name='+', blank=True, null=True)
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='+')
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='+')
+    date = models.DateTimeField(default=timezone.now)
+    content = models.CharField(max_length=1000)
+    image = models.ImageField(upload_to='uploads/msgpics', blank=True, null=True)
+    viewed = models.BooleanField(default=False)
+
+
+NotificationType = Enum('NotificationType', 'LIKE COMMENT FOLLOW MESSAGE')
 
 class Notification(models.Model):
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notification_from', null=True)
@@ -79,4 +94,5 @@ class Notification(models.Model):
     date = models.DateTimeField(default=timezone.now)
     post = models.ForeignKey('Post', on_delete=models.CASCADE, related_name='+', blank=True, null=True)
     comment = models.ForeignKey('Comment', on_delete=models.CASCADE, related_name='+', blank=True, null=True)
+    thread = models.ForeignKey('Thread', on_delete=models.CASCADE, related_name='+', blank=True, null=True)
     viewed = models.BooleanField(default=False)

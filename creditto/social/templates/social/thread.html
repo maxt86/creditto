@@ -1,0 +1,83 @@
+{% extends 'landing/base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="row justify-content-center mb-3">
+  <div class="card shadow-sm col-md-5 col-sm-12 p-3">
+    {% if request.user == thread.user %}
+    <h6 class="mb-0">
+      <img class="rounded-circle me-1" src="{{ thread.receiver.profile.avatar.url }}" width="36" height="36">
+      <strong>{{ thread.receiver }}</strong>
+      {% if thread.receiver.profile.name %}
+      <i>{{ thread.receiver.profile.name }}</i>
+      {% endif %}
+    </h6>
+    <a href="{% url 'profile' thread.receiver.profile.pk %}" class="stretched-link"></a>
+    {% else %}
+    <h6 class="mb-0">
+      <img class="rounded-circle me-1" src="{{ thread.user.profile.avatar.url }}" width="36" height="36">
+      <strong>{{ thread.user }}</strong>
+      {% if thread.user.profile.name %}
+      <i>{{ thread.user.profile.name }}</i>
+      {% endif %}
+    </h6>
+    <a href="{% url 'profile' thread.user.profile.pk %}" class="stretched-link"></a>
+    {% endif %}
+  </div>
+</div>
+
+{% if messages.all.count == 0 %}
+<div class="row justify-content-center mb-3">
+  <div class="col-md-5 col-sm-12 text-center">
+    <p class="lead mb-0">No human activity detected. You may be the first!</p>
+  </div>
+</div>
+{% endif %}
+
+{% for message in messages %}
+  {% if request.user == message.receiver %}
+    {% if message.image %}
+    <div class="row justify-content-center mb-2">
+      <div class="col-md-5 col-sm-12 px-1">
+        <img class="d-block border border-muted rounded message-picture" src="{{ message.image.url }}">
+      </div>
+    </div>
+    {% endif %}
+    {% if message.content %}
+    <div class="row justify-content-center mb-3">
+      <div class="col-md-5 col-sm-12 px-1">
+        <div class="card px-3 py-2 user-select-none message">{{ message.content }}</div>
+      </div>
+    </div>
+    {% endif %}
+  {% else %}
+    {% if message.image %}
+    <div class="row justify-content-center mb-2">
+      <div class="col-md-5 col-sm-12 px-1">
+        <img class="d-block border border-muted rounded me-0 ms-auto message-picture" src="{{ message.image.url }}">
+      </div>
+    </div>
+    {% endif %}
+    {% if message.content %}
+    <div class="row justify-content-center mb-3">
+      <div class="col-md-5 col-sm-12 px-1">
+        <div class="card text-light bg-primary border-0 me-0 ms-auto px-3 py-2 user-select-none message">{{ message.content }}</div>
+      </div>
+    </div>
+    {% endif %}
+  {% endif %}
+{% endfor %}
+
+<div class="row justify-content-center mb-3">
+  <div class="card shadow col-md-5 col-sm-12 p-3">
+    <form method="post" action="{% url 'message-create' thread.pk %}" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form|crispy }}
+      <div class="d-flex justify-content-end mt-3">
+        <button class="btn btn-sm btn-warning" type="submit">Send Message</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,51 @@
+{% extends 'landing/base.html' %}
+
+{% block content %}
+<div class="row mb-4">
+  <div class="col-md-5 col-sm-6">
+    <a class="btn btn-sm btn-warning shadow-none" href="{% url 'thread-create' %}">New Thread</a>
+  </div>
+</div>
+
+<div class="row justify-content-center mb-3">
+  <div class="col-md-5 col-sm-12">
+    <h1 class="display-6">
+      <i class="far fa-envelope thread-icon"></i>
+      Conversations
+    </h1>
+  </div>
+</div>
+
+{% if threads.all.count == 0 %}
+<div class="row justify-content-center">
+  <div class="col-md-5 col-sm-12">
+    <p class="lead">No talk here yet. Why not create a new thread? :)</p>
+  </div>
+</div>
+{% endif %}
+
+{% for thread in threads.all %}
+<div class="row justify-content-center mb-3">
+  <div class="col-md-5 col-sm-12 py-3 border-bottom position-relative">
+    {% if request.user == thread.user %}
+    <h6 class="mb-0">
+      <img class="rounded-circle me-1" src="{{ thread.receiver.profile.avatar.url }}" width="36" height="36">
+      <strong>{{ thread.receiver }}</strong>
+      {% if thread.receiver.profile.name %}
+      <i>{{ thread.receiver.profile.name }}</i>
+      {% endif %}
+    </h6>
+    {% else %}
+    <h6 class="mb-0">
+      <img class="rounded-circle me-1" src="{{ thread.user.profile.avatar.url }}" width="36" height="36">
+      <strong>{{ thread.user }}</strong>
+      {% if thread.user.profile.name %}
+      <i>{{ thread.user.profile.name }}</i>
+      {% endif %}
+    </h6>
+    {% endif %}
+    <a class="stretched-link" href="{% url 'thread' thread.pk %}"></a>
+  </div>
+</div>
+{% endfor %}
+{% endblock content %}

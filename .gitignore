@@ -89,3 +89,4 @@ db.sqlite3
 creditto/media/uploads/avatars/*
 !creditto/media/uploads/avatars/default.png
 creditto/media/uploads/postpics/
+creditto/media/uploads/msgpics/

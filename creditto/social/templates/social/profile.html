@@ -11,7 +11,10 @@
       {% if profile.name %}
       {{ profile.name }}
       {% endif %}
-      <strong>@{{ profile.user.username }}</strong>
+      <form class="d-inline" action="{% url 'thread-create' %}">
+        <input type="hidden" name="u" value="{{ profile.user.username }}">
+        <button class="btn-cleardefaults p-0"><strong>@{{ profile.user.username }}</strong></button>
+      </form>
       {% if request.user == user %}
       <a href="{% url 'profile-edit' profile.pk %}" class="text-warning"><i class="far fa-edit"></i></a>
       {% endif %}

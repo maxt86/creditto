@@ -20,6 +20,11 @@ from .views import CommentDeleteView
 from .views import CommentLikeView
 from .views import CommentDislikeView
 from .views import NotificationDeleteView
+from .views import ConversationsView
+from .views import ThreadCreateView
+from .views import ThreadView
+from .views import ThreadNotificationView
+from .views import MessageCreateView
 
 
 urlpatterns = [
@@ -47,5 +52,11 @@ urlpatterns = [
     path('post/<int:post_pk>/comment/<int:pk>/like/', CommentLikeView.as_view(), name='comment-like'),
     path('post/<int:post_pk>/comment/<int:pk>/dislike/', CommentDislikeView.as_view(), name='comment-dislike'),
     
-    path('notified/<int:pk>/', NotificationDeleteView.as_view(), name='notification-delete')
+    path('inbox/', ConversationsView.as_view(), name='conversations'),
+    path('newthread/', ThreadCreateView.as_view(), name='thread-create'),
+    path('thread/<int:pk>/', ThreadView.as_view(), name='thread'),
+    path('thread/<int:thread_pk>/notified/<int:pk>/', ThreadNotificationView.as_view(), name='thread-notification'),
+    path('thread/<int:pk>/newmessage/', MessageCreateView.as_view(), name='message-create'),
+    
+    path('notified/<int:pk>/', NotificationDeleteView.as_view(), name='notification-delete'),
 ]
