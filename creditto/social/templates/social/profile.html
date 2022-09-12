@@ -39,12 +39,12 @@
       {% if following %}
       <form action="{% url 'remove-follower' profile.pk %}" method="post">
         {% csrf_token %}
-        <button class="btn btn-sm btn-outline-danger" type="submit">Unfollow</button>
+        <button class="ms-2 btn btn-sm btn-outline-danger" type="submit">Unfollow</button>
       </form>
       {% else %}
       <form action="{% url 'add-follower' profile.pk %}" method="post">
         {% csrf_token %}
-        <button class="btn btn-sm btn-outline-success" type="submit">Follow</button>
+        <button class="ms-2 btn btn-sm btn-outline-success" type="submit">Follow</button>
       </form>
       {% endif %}
       {% endif %}
