@@ -16,6 +16,7 @@ from django.views import View
 from django.views.generic.edit import UpdateView, DeleteView
 
 from .models import Profile
+from .models import Image
 from .models import Post
 from .models import Comment
 from .models import NotificationType, Notification
@@ -169,9 +170,17 @@ class PostsView(LoginRequiredMixin, View):
         ).order_by('-created')
         
         form = PostForm(request.POST, request.FILES)
+        files = request.FILES.getlist('image')
         if form.is_valid():
             new_post = form.save(commit=False)
             new_post.author = request.user
+            new_post.save()
+            
+            for file in files:
+                image = Image(image=file)
+                image.save()
+                new_post.image.add(image)
+            
             new_post.save()
         
         context = {

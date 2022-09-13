@@ -25,8 +25,33 @@
         <strong>{{ post.author }}</strong>
         <i class="text-secondary">{{ post.created }}</i>
       </h6>
-      {% if post.image %}
-      <img src="{{ post.image.url }}" class="mw-100 d-block border border-muted rounded mx-auto mt-3 mb-2 post-picture">
+      {% if post.image.count > 0 %}
+        {% if post.image.count == 1 %}
+        <img class="mt-3 mb-2 d-block mx-auto mw-100 border border-muted rounded post-picture" src="{{ post.image.all.first.image.url }}">
+        {% else %}
+        <div id="carousel-{{ forloop.counter0 }}" class="carousel slide border border-muted rounded mt-3 mb-2 post-carousel" data-bs-ride="carousel">
+          <div class="carousel-indicators">
+            {% for image in post.image.all %}
+            <button class="border border-secondary{% if not forloop.counter0 %} active{% endif %}"
+                    type="button"
+                    data-bs-target="#carousel-{{ forloop.parentloop.counter0 }}"
+                    data-bs-slide-to="{{ forloop.counter0 }}"
+                    {% if not forloop.counter0 %}
+                    aria-current="true"
+                    {% endif %}
+                    aria-label="Picture {{ forloop.counter }}"
+            ></button>
+            {% endfor %}
+          </div>
+          <div class="carousel-inner d-flex align-items-center post-carousel-inner">
+            {% for image in post.image.all %}
+            <div class="carousel-item{% if not forloop.counter0 %} active{% endif %}">
+                <img class="d-block mx-auto mw-100 rounded post-picture" x-class="mw-100 d-block border border-muted rounded mx-auto {% if forloop.counter0 %}mt-3{% endif %} mb-2 post-picture" src="{{ image.image.url }}">
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
       {% endif %}
       {{ post.content }}
       <a href="{% url 'post-detail' post.pk %}" class="stretched-link"></a>

@@ -20,8 +20,17 @@
   color: red;
 }
 
+.post-carousel {
+  box-sizing: content-box;
+  height: 15rem;
+}
+
+.post-carousel-inner {
+  height: 15rem;
+}
+
 .post-picture {
-  max-height: 20rem;
+  max-height: 15rem;
 }
 
 .inbox-icon {
