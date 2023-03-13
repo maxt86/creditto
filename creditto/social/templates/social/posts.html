@@ -17,63 +17,99 @@
 </div>
 
 {% for post in posts %}
-<div class="row justify-content-center mb-3">
-  <div class="col-md-5 col-sm-12 border-bottom">
-    <div class="position-relative">
+<div x-data="{ shareButton: false }">
+  <div class="row justify-content-center mb-3">
+    <div class="col-md-5 col-sm-12 border-bottom">
+      {% if post.user_shared %}
       <h6>
-        <img class="rounded-circle me-1" src="{{ post.author.profile.avatar.url }}" width="36" height="36">
-        <strong>{{ post.author }}</strong>
-        <i class="text-secondary">{{ post.created }}</i>
+        <a href="{% url 'profile' post.user_shared.pk %}"><img class="rounded-circle me-1" src="{{ post.user_shared.profile.avatar.url }}" width="36" height="36"></a>
+        <strong class="position-relative">
+          {{ post.user_shared }}
+          <a href="{% url 'profile' post.user_shared.pk %}" class="stretched-link"></a>
+        </strong>
+        <i class="text-secondary">{{ post.shared }} [shared]</i>
       </h6>
-      {% if post.image.count > 0 %}
-        {% if post.image.count == 1 %}
-        <img class="mt-3 mb-2 d-block mx-auto mw-100 border border-muted rounded post-picture" src="{{ post.image.all.first.image.url }}">
-        {% else %}
-        <div id="carousel-{{ forloop.counter0 }}" class="carousel slide border border-muted rounded mt-3 mb-2 post-carousel" data-bs-ride="carousel">
-          <div class="carousel-indicators">
-            {% for image in post.image.all %}
-            <button class="border border-secondary{% if not forloop.counter0 %} active{% endif %}"
-                    type="button"
-                    data-bs-target="#carousel-{{ forloop.parentloop.counter0 }}"
-                    data-bs-slide-to="{{ forloop.counter0 }}"
-                    {% if not forloop.counter0 %}
-                    aria-current="true"
-                    {% endif %}
-                    aria-label="Picture {{ forloop.counter }}"
-            ></button>
-            {% endfor %}
-          </div>
-          <div class="carousel-inner d-flex align-items-center post-carousel-inner">
-            {% for image in post.image.all %}
-            <div class="carousel-item{% if not forloop.counter0 %} active{% endif %}">
-                <img class="d-block mx-auto mw-100 rounded post-picture" x-class="mw-100 d-block border border-muted rounded mx-auto {% if forloop.counter0 %}mt-3{% endif %} mb-2 post-picture" src="{{ image.image.url }}">
-            </div>
-            {% endfor %}
-          </div>
-        </div>
-        {% endif %}
+      {{ post.shared_content }}
       {% endif %}
-      {{ post.content }}
-      <a href="{% url 'post-detail' post.pk %}" class="stretched-link"></a>
+      <div class="position-relative">
+        <div class="{% if post.user_shared %}mt-2 ms-3{% endif %}">
+          <h6>
+            <img class="rounded-circle {% if not post.user_shared %}me-1{% endif %}"
+                 src="{{ post.author.profile.avatar.url }}"
+                 width="{% if post.user_shared %}30{% else %}36{% endif %}"
+                 height="{% if post.user_shared %}30{% else %}36{% endif %}">
+            <strong>{{ post.author }}</strong>
+            {% if not post.user_shared %}
+            <i class="text-secondary">{{ post.created }}</i>
+            {% endif %}
+          </h6>
+          {% if post.image.count > 0 %}
+            {% if post.image.count == 1 %}
+            <img class="mt-3 mb-2 d-block mx-auto mw-100 border border-muted rounded post-picture" src="{{ post.image.all.first.image.url }}">
+            {% else %}
+            <div id="carousel-{{ forloop.counter0 }}" class="carousel slide border border-muted rounded mt-3 mb-2 post-carousel" data-bs-ride="carousel">
+              <div class="carousel-indicators">
+                {% for image in post.image.all %}
+                <button class="border border-secondary{% if not forloop.counter0 %} active{% endif %}"
+                        type="button"
+                        data-bs-target="#carousel-{{ forloop.parentloop.counter0 }}"
+                        data-bs-slide-to="{{ forloop.counter0 }}"
+                        {% if not forloop.counter0 %}
+                        aria-current="true"
+                        {% endif %}
+                        aria-label="Picture {{ forloop.counter }}"
+                ></button>
+                {% endfor %}
+              </div>
+              <div class="carousel-inner d-flex align-items-center post-carousel-inner">
+                {% for image in post.image.all %}
+                <div class="carousel-item{% if not forloop.counter0 %} active{% endif %}">
+                    <img class="d-block mx-auto mw-100 rounded post-picture" x-class="mw-100 d-block border border-muted rounded mx-auto {% if forloop.counter0 %}mt-3{% endif %} mb-2 post-picture" src="{{ image.image.url }}">
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+            {% endif %}
+          {% endif %}
+          {{ post.content }}
+          <a href="{% url 'post-detail' post.pk %}" class="stretched-link"></a>
+        </div>
+      </div>
+
+      <div class="d-flex gap-1 flex-row justify-content-end my-2">
+        <button class="btn-cleardefaults" @click="shareButton = !shareButton"><i class="far fa-share-square share-btn"></i></button>
+        <form action="{% url 'like' post.pk %}" method="post">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.path }}">
+          <button type="submit" class="btn-cleardefaults">
+            <i class="text-success fas fa-thumbs-up"></i>
+            <i>{{ post.likes.count }}</i>
+          </button>
+        </form>
+        <form action="{% url 'dislike' post.pk %}" method="post">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.path }}">
+          <button type="submit" class="btn-cleardefaults">
+            <i class="text-danger fas fa-thumbs-down"></i>
+            <i>{{ post.dislikes.count }}</i>
+          </button>
+        </form>
+      </div>
     </div>
-    <div class="d-flex gap-1 flex-row justify-content-end my-2">
-      <form action="{% url 'like' post.pk %}" method="post">
-        {% csrf_token %}
-        <input type="hidden" name="next" value="{{ request.path }}">
-        <button type="submit" class="btn-cleardefaults">
-          <i class="text-success fas fa-thumbs-up"></i>
-          <i>{{ post.likes.count }}</i>
-        </button>
-      </form>
-      <form action="{% url 'dislike' post.pk %}" method="post">
-        {% csrf_token %}
-        <input type="hidden" name="next" value="{{ request.path }}">
-        <button type="submit" class="btn-cleardefaults">
-          <i class="text-danger fas fa-thumbs-down"></i>
-          <i>{{ post.dislikes.count }}</i>
-        </button>
-      </form>
+
+    {% if request.user.is_authenticated %}
+    <div class="row justify-content-center mt-4" x-cloak x-show="shareButton" x-transition.duration.1000ms>
+      <div class="col-md-5 col-sm-12 ps-5">
+        <form id="{{ post.pk }}" action="{% url 'post-share' post.pk %}" method="post">
+          {% csrf_token %}
+          <div class="d-flex align-items-center gap-2">
+            {{ shareform|crispy }}
+            <button class="mb-3 btn btn-dark btn-sm" type="submit">Share</button>
+          </div>
+        </form>
+      </div>
     </div>
+    {% endif %}
   </div>
 </div>
 {% endfor %}

@@ -12,7 +12,7 @@ class PostForm(forms.ModelForm):
         widget=forms.Textarea(attrs={
             'rows': 2,
             'placeholder': 'Tell the world something...',
-        })
+        }),
     )
     
     image = forms.ImageField(
@@ -35,7 +35,7 @@ class CommentForm(forms.ModelForm):
         widget=forms.Textarea(attrs={
             'rows': 1,
             'style': 'resize: none; overflow: hidden',
-        })
+        }),
     )
     
     class Meta:
@@ -56,3 +56,14 @@ class MessageForm(forms.ModelForm):
     class Meta:
         model = Message
         fields = ['content', 'image']
+
+
+class ShareForm(forms.Form):
+    content = forms.CharField(
+        label='',
+        widget=forms.Textarea(attrs={
+            'rows': '1',
+            'style': 'resize: none; overflow: hidden',
+            'placeholder': 'Say something...',
+        }),
+    )

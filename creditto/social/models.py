@@ -47,12 +47,19 @@ class Image(models.Model):
 
 
 class Post(models.Model):
+    
     author = models.ForeignKey(User, on_delete=models.CASCADE)
+    user_shared = models.ForeignKey(User, on_delete=models.CASCADE, related_name='+', blank=True, null=True)
     created = models.DateTimeField(default=timezone.now)
+    shared = models.DateTimeField(blank=True, null=True)
     content = models.TextField()
+    shared_content = models.TextField(blank=True, null=True)
     image = models.ManyToManyField('Image', blank=True)
     likes = models.ManyToManyField(User, related_name='likes', blank=True)
     dislikes = models.ManyToManyField(User, related_name='dislikes', blank=True)
+    
+    class Meta:
+        ordering = ['-created', '-shared']
 
 
 class Comment(models.Model):

@@ -1,5 +1,7 @@
 from django.db.models import Q
 
+from django.utils import timezone
+
 from django.http import HttpResponse
 
 from django.shortcuts import render
@@ -27,6 +29,7 @@ from .forms import PostForm
 from .forms import CommentForm
 from .forms import ThreadForm
 from .forms import MessageForm
+from .forms import ShareForm
 
 
 class SearchView(View):
@@ -64,7 +67,7 @@ class ProfileView(View):
                 break
         
         user = profile.user
-        posts = Post.objects.filter(author=user).order_by('-created')
+        posts = Post.objects.filter(Q(author=user) | Q(user_shared=user)).order_by('-created').order_by('-shared')
         
         context = {
             'profile': profile,
@@ -153,24 +156,30 @@ class PostsView(LoginRequiredMixin, View):
     
     def get(self, request, *args, **kwargs):
         posts = Post.objects.filter(
-            author__profile__followers__in=[request.user.id]
-        ).order_by('-created')
+            Q(author__profile__followers__in=[request.user.id])
+            & ~Q(user_shared=request.user)
+        ).order_by('-created').order_by('-shared')
         
         form = PostForm()
+        share_form = ShareForm()
         
         context = {
             'posts': posts,
             'form': form,
+            'shareform': share_form,
         }
         return render(request, 'social/posts.html', context)
     
     def post(self, request, *args, **kwargs):
         posts = Post.objects.filter(
             author__profile__followers__in=[request.user.id]
-        ).order_by('-created')
+        ).order_by('-created').order_by('-shared')
+        
+        files = request.FILES.getlist('image')
         
         form = PostForm(request.POST, request.FILES)
-        files = request.FILES.getlist('image')
+        share_form = ShareForm()
+        
         if form.is_valid():
             new_post = form.save(commit=False)
             new_post.author = request.user
@@ -186,6 +195,7 @@ class PostsView(LoginRequiredMixin, View):
         context = {
             'posts': posts,
             'form': form,
+            'shareform': share_form,
         }
         return render(request, 'social/posts.html', context)
 
@@ -234,6 +244,33 @@ class PostDetailView(View):
             'comments': comments,
         }
         return render(request, 'social/post_detail.html', context)
+
+
+class SharedPostView(View):
+    
+    def post(self, request, pk, *args, **kwargs):
+        orig_post = Post.objects.get(pk=pk)
+        
+        form = ShareForm(request.POST)
+        
+        if form.is_valid():
+            new_post = Post(
+                author=orig_post.author,
+                user_shared=request.user,
+                created=orig_post.created,
+                shared=timezone.now(),
+                content=orig_post.content,
+                shared_content=self.request.POST.get('content'),
+            )
+            
+            new_post.save()
+            
+            for img in orig_post.image.all():
+                new_post.image.add(img)
+            
+            new_post.save()
+        
+        return redirect('posts')
 
 
 class PostEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):

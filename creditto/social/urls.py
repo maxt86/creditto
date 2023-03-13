@@ -9,6 +9,7 @@ from .views import FollowersView
 from .views import ProfileNotificationView
 from .views import PostsView
 from .views import PostDetailView
+from .views import SharedPostView
 from .views import PostEditView
 from .views import PostDeleteView
 from .views import PostNotificationView
@@ -44,7 +45,8 @@ urlpatterns = [
     path('post/<int:pk>/delete/', PostDeleteView.as_view(), name='post-delete'),
     path('post/<int:pk>/like/', LikeView.as_view(), name='like'),
     path('post/<int:pk>/dislike/', DislikeView.as_view(), name='dislike'),
-    path('post/<int:post_pk>/notified/<int:pk>', PostNotificationView.as_view(), name='post-notification'),
+    path('post/<int:post_pk>/notified/<int:pk>/', PostNotificationView.as_view(), name='post-notification'),
+    path('post/<int:pk>/share/', SharedPostView.as_view(), name='post-share'),
     
     path('post/<int:post_pk>/comment/<int:pk>/reply/', CommentReplyView.as_view(), name='comment-reply'),
     path('post/<int:post_pk>/comment/<int:pk>/edit/', CommentEditView.as_view(), name='comment-edit'),
