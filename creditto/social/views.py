@@ -345,8 +345,7 @@ class LikeView(LoginRequiredMixin, View):
         else:
             post.likes.remove(request.user)
         
-        next = request.POST.get('next', '/')
-        return redirect(next)
+        return HttpResponse(f'success {[-1, 1][not liked]} {int(disliked)}', content_type='text/plain')
 
 
 class DislikeView(LoginRequiredMixin, View):
@@ -374,8 +373,7 @@ class DislikeView(LoginRequiredMixin, View):
         else:
             post.dislikes.remove(request.user)
         
-        next = request.POST.get('next', '/')
-        return redirect(next)
+        return HttpResponse(f'success {[-1, 1][not disliked]} {int(liked)}', content_type='text/plain')
 
 
 class CommentReplyView(LoginRequiredMixin, View):

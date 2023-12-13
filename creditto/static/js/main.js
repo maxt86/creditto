@@ -51,3 +51,77 @@ function deleteNotification(url, elemId) {
             alert('Internal Error');
         });
 }
+
+function likePost(url, dislikeUrl) {
+    let likes = document.querySelector(`form[action="${url}"] .like-count`);
+    let dislikes = document.querySelector(`form[action="${dislikeUrl}"] .dislike-count`);
+    
+    let numLikes = parseInt(likes.innerText);
+    let numDislikes = parseInt(dislikes.innerText);
+    
+    const csrftoken = getCookie('csrftoken');
+    const config = {
+        headers: {
+            'X-CSRFToken': csrftoken,
+        }
+    };
+    
+    axios.post(url, {}, config)
+        .then((response) => {
+            let [status, likeAction, wasDisliked] = response.data.split(' ');
+            
+            if (status != 'success') {
+                alert('Error: Liking Failed');
+                return;
+            }
+            
+            likeAction = parseInt(likeAction);
+            wasDisliked = parseInt(wasDisliked);
+            
+            numLikes += likeAction;
+            numDislikes -= wasDisliked;
+            
+            likes.innerText = numLikes;
+            dislikes.innerText = numDislikes;
+        })
+        .catch((error) => {
+            alert('Internal Error');
+        });
+}
+
+function dislikePost(url, likeUrl) {
+    let dislikes = document.querySelector(`form[action="${url}"] .dislike-count`);
+    let likes = document.querySelector(`form[action="${likeUrl}"] .like-count`);
+    
+    let numDislikes = parseInt(dislikes.innerText);
+    let numLikes = parseInt(likes.innerText);
+    
+    const csrftoken = getCookie('csrftoken');
+    const config = {
+        headers: {
+            'X-CSRFToken': csrftoken,
+        }
+    };
+    
+    axios.post(url, {}, config)
+        .then((response) => {
+            let [status, dislikeAction, wasLiked] = response.data.split(' ');
+            
+            if (status != 'success') {
+                alert('Error: Disliking Failed');
+                return;
+            }
+            
+            dislikeAction = parseInt(dislikeAction);
+            wasLiked = parseInt(wasLiked);
+            
+            numDislikes += dislikeAction;
+            numLikes -= wasLiked;
+            
+            dislikes.innerText = numDislikes;
+            likes.innerText = numLikes;
+        })
+        .catch((error) => {
+            alert('Internal Error');
+        });
+}

@@ -59,20 +59,16 @@
       {% endif %}
     {{ post.content }}
     <div class="d-flex gap-1 flex-row justify-content-end my-2">
-      <form action="{% url 'like' post.pk %}" method="post">
-        {% csrf_token %}
-        <input type="hidden" name="next" value="{{ request.path }}">
+      <form action="{% url 'like' post.pk %}" method="post" @submit.prevent="likePost('{% url 'like' post.pk %}', '{% url 'dislike' post.pk %}')">
         <button type="submit" class="btn-cleardefaults" {% if not request.user.is_authenticated %}disabled{% endif %}>
           <i class="text-success fas fa-thumbs-up"></i>
-          <i class="text-dark">{{ post.likes.count }}</i>
+          <i class="like-count text-dark">{{ post.likes.count }}</i>
         </button>
       </form>
-      <form action="{% url 'dislike' post.pk %}" method="post">
-        {% csrf_token %}
-        <input type="hidden" name="next" value="{{ request.path }}">
+      <form action="{% url 'dislike' post.pk %}" method="post" @submit.prevent="dislikePost('{% url 'dislike' post.pk %}', '{% url 'like' post.pk %}')">
         <button type="submit" class="btn-cleardefaults" {% if not request.user.is_authenticated %}disabled{% endif %}>
           <i class="text-danger fas fa-thumbs-down"></i>
-          <i class="text-dark">{{ post.dislikes.count }}</i>
+          <i class="dislike-count text-dark">{{ post.dislikes.count }}</i>
         </button>
       </form>
     </div>
